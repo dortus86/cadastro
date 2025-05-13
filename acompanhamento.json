@@ -1,0 +1,105 @@
+[
+    {
+        "id": "68210ec6524ba",
+        "transportadora": "Itaguary",
+        "placa": "kkk888",
+        "motorista": "danyel",
+        "rg": "123456",
+        "status": "liberado",
+        "hora_chegada": "2025-05-11 17:55:34",
+        "dados": [
+            {
+                "nf": "11111",
+                "po": "4100000000",
+                "fornecedor": "stolle",
+                "data_hora": "2025-05-11 17:55:34"
+            },
+            {
+                "nf": "22222",
+                "po": "4100000008",
+                "fornecedor": "stolle",
+                "data_hora": "2025-05-11 17:55:34"
+            },
+            {
+                "nf": "3333",
+                "po": "4100000001",
+                "fornecedor": "mentec",
+                "data_hora": "2025-05-11 17:55:34"
+            }
+        ]
+    },
+    {
+        "id": "68210eebae129",
+        "transportadora": "Itaguary",
+        "placa": "kkk888",
+        "motorista": "danyel",
+        "rg": "123456",
+        "status": "concluido",
+        "hora_chegada": "2025-05-11 17:56:11",
+        "dados": [
+            {
+                "nf": "33333",
+                "po": "4100000009",
+                "fornecedor": "stolle",
+                "data_hora": "2025-05-11 17:56:11"
+            },
+            {
+                "nf": "66666",
+                "po": "4100000010",
+                "fornecedor": "fag",
+                "data_hora": "2025-05-11 17:56:11"
+            }
+        ]
+    },
+    {
+        "id": "682112e97810d",
+        "transportadora": "Itaguary",
+        "placa": "kkk888",
+        "motorista": "danyel",
+        "rg": "123456",
+        "status": "cancelado",
+        "hora_chegada": "2025-05-10 18:13:13",
+        "dados": [
+            {
+                "nf": "11111",
+                "po": "4100000000",
+                "fornecedor": "stolle",
+                "data_hora": "2025-05-10 18:13:13"
+            }
+        ]
+    },
+    {
+        "id": "68211925d0ed4",
+        "transportadora": "Itaguary",
+        "placa": "sadasd",
+        "motorista": "asdasd",
+        "rg": "6388875",
+        "status": "concluido",
+        "hora_chegada": "2025-05-10 18:39:49",
+        "dados": [
+            {
+                "nf": "123123",
+                "po": "4100000000",
+                "fornecedor": "Stolle",
+                "data_hora": "2025-05-10 18:39:49"
+            }
+        ]
+    },
+    {
+        "id": "68211c254d464",
+        "transportadora": "aerotrafic",
+        "placa": "kkkiii",
+        "motorista": "asdasd",
+        "rg": "6388875",
+        "status": "aguardando",
+        "hora_chegada": "2025-05-11 18:52:37",
+        "dados": [
+            {
+                "nf": "987456",
+                "po": "4200013121",
+                "fornecedor": "teste2",
+                "data_hora": "2025-05-11 18:52:37"
+            }
+        ]
+    }
+]

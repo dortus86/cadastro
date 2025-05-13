@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal de Cadastro de Transporte</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <nav class="nav-bg">
+        <div class="nav container">
+            <div class="logo">
+                <img src="./icon/logo-ball.png" alt="logotipo">
+            </div>
+            <a href="./acompanhamento.html">Acompanhamento</a>
+            <button onclick="abrirPopupPesquisa()" class="btn-pesquisar"><img src="./icon/pesquisa.svg" alt="">Pesquisar Dados</button>
+        </div>
+    </nav>
+    <div class="portal">
+        <div class="card">
+            <h2>CAVA - Cadastro de Acesso de Veículos do Almoxarifado</h2>
+            <form id="form">
+                <div class="form-grid">
+                    <input type="text" id="transportadora" placeholder="Transportadora" required>
+                    <input type="text" id="placa" placeholder="Placa do Veículo" required>
+                    <input type="text" id="motorista" placeholder="Motorista" required>
+                    <input type="text" id="rg" placeholder="RG" required>
+                </div>
+
+                <div class="form-grid">
+                    <input type="text" id="nf" placeholder="Nota Fiscal" required>
+                    <input type="text" id="po" placeholder="Pedido (PO)" required>
+                    <input type="text" id="fornecedor" placeholder="Fornecedor" required>
+                </div>
+                <button type="submit" class="btn-block botao-salvar inserir-dados">
+                    <img src="./icon/save.svg" alt="inserir">Inserir Dados</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Itens Cadastrados</h2>
+            
+            <table id="dadosTabela">
+                <thead>
+                    <tr>
+                        <th>Transportadora</th>
+                        <th>Placa</th>
+                        <th>Motorista</th>
+                        <th>RG</th>
+                        <th>NF</th>
+                        <th>PO</th>
+                        <th>Fornecedor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-body">
+                    <!-- Linhas adicionadas via JS -->
+                </tbody>
+            </table>
+
+            <div class="botoes-table" style="text-align: right; margin-top: 20px;">
+                <button class="botao-salvar" onclick="salvarDadosServidor()"><img src="./icon/save2.svg" alt="">Salvar Dados</button>
+                <button class="botao-limpar" onclick="limparTabela()" style="margin-top: 10px;">Limpar Pesquisa</button>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <div id="modalPesquisa">     
+        <div class="conteudo">
+            <h2>Pesquisar Dados</h2>
+            <div id="mensagemNenhumResultado" style="display: none; text-align: center; margin-top: 20px; font-weight: bold; color: red;">Nenhum dado encontrado.</div>
+            <form id="formPesquisa">
+                <input type="text" id="filtroNotaFiscal" name="nota" placeholder="Nota Fiscal">
+                <input type="text" id="filtroPedido" name="pedido" placeholder="Pedido (PO)">
+                <input type="text" id="filtroFornecedor" name="fornecedor" placeholder="Fornecedor">
+                <label>De: <input type="date" id="filtroDataInicio" name="dataInicio"></label>
+                <label>Até: <input type="date" id="filtroDataFim" name="dataFim"></label>
+                <button onclick="buscarDados()" type="submit">Pesquisar</button>
+                <button type="button" onclick="fecharPopupPesquisa()">Fechar</button>
+            </form>
+            <div id="resultadoPesquisa"></div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>

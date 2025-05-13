@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Acompanhamento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .logo-img {
+            display: grid;
+            justify-content: center;
+        }
+        .logo-img img{
+            height: 50px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .circle {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .amarelo {
+            background-color: #FF9800;
+        }
+
+        .verde {
+            background-color: green;
+        }
+
+        .cinza {
+            background-color: grey;
+        }
+
+        .vermelho {
+            background-color: red;
+        }
+        .btn-liberar {
+            background-color: #4CAF50 ;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btn-concluir {
+            background-color: gray;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btn-cancelar {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btn-detalhes {
+            background: none;
+            border: none;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        button {
+            margin: 2px;
+            padding: 5px;
+        }
+        .filtro-data input {
+            padding: 8px 16px;
+            color: rgb(49, 49, 49);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-left: 4px;
+            border-color: 1px solid grey;
+        }
+        .linha-anterior {
+            background-color: #f3f3f3;
+            color: #666;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <div class="logo-img">
+        <img src="./icon/ball-blu.png" alt="Logotipo">
+    </div>
+    <h1>CAVA - Painel de Controle</h1>
+    <div class="filtro-data" style="text-align: center; margin-bottom: 20px;">
+        <label for="filtroData">Data:</label>
+        <input type="date" id="filtroData">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Transportadora</th>
+                <th>Placa</th>
+                <th>Motorista</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="painel-body">
+            <!-- preenchido via JS -->
+        </tbody>
+    </table>
+    <!-- Modal de Detalhes -->
+    <div id="modalDetalhes" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
+    background:#fff; border:1px solid #ccc; padding:20px; z-index:1000; width:80%; max-height:70%; overflow-y:auto;">
+        <h3>Detalhes do Cadastro</h3>
+        <div id="conteudoDetalhes"></div>
+        <button onclick="document.getElementById('modalDetalhes').style.display='none'">Fechar</button>
+    </div>
+
+    <script>
+        function carregarAcompanhamento() {
+            fetch("acompanhamento.json")
+                .then(res => res.json())
+                .then(dados => {
+                    const filtroData = document.getElementById("filtroData").value;
+                    const tbody = document.getElementById("painel-body");
+                    tbody.innerHTML = "";
+
+                    const dataSelecionada = filtroData || new Date().toISOString().split("T")[0];
+                    const hoje = new Date().toISOString().split("T")[0];
+                    const edicaoPermitida = (dataSelecionada === hoje);
+
+                    const dadosFiltrados = dados.filter(item => {
+                        const dataHora = item.hora_chegada || item.dados?.[0]?.data_hora;
+                        if (!dataHora) return false;
+                        return dataHora.startsWith(dataSelecionada);
+                    });
+
+                    dadosFiltrados.forEach((item) => {
+                        const statusClass = {
+                            "aguardando": "amarelo",
+                            "liberado": "verde",
+                            "concluido": "cinza",
+                            "cancelado": "vermelho"
+                        }[item.status] || "vermelho";
+
+                        const botoes = edicaoPermitida ? `
+                            <button class="btn-liberar" onclick="alterarStatus('${item.id}', 'liberado')">Liberar</button>
+                            <button class="btn-concluir" onclick="alterarStatus('${item.id}', 'concluido')">Concluir</button>
+                            <button class="btn-cancelar" onclick="alterarStatus('${item.id}', 'cancelado')">Cancelar</button>
+                        ` : `<em>bloqueado</em>`;
+
+                        const tr = document.createElement("tr");
+                        if (!edicaoPermitida) {
+                            tr.classList.add("linha-anterior");
+                        }
+                        tr.innerHTML = `
+                            <td>${item.transportadora}</td>
+                            <td>${item.placa}</td>
+                            <td>${item.motorista}</td>
+                            <td><span class="circle ${statusClass}"></span> ${item.status}</td>
+                            <td>
+                                ${botoes}
+                                <button class="btn-detalhes" onclick="mostrarDetalhes('${item.id}')">Ver Detalhes</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                });
+        }
+
+        function alterarStatus(id, novoStatus) {
+            fetch("alterar_status.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, status: novoStatus })
+            })
+                .then(res => res.text())
+                .then(msg => {
+                    alert(msg);
+                    carregarAcompanhamento();
+                });
+        }
+
+        function mostrarDetalhes(id) {
+            fetch("acompanhamento.json")
+                .then(res => res.json())
+                .then(dados => {
+                    const item = dados.find(d => d.id === id);
+                    if (!item) return alert("Registro não encontrado.");
+
+                    const div = document.getElementById("conteudoDetalhes");
+
+                    let html = `
+                        <p><strong>Transportadora:</strong> ${item.transportadora}</p>
+                        <p><strong>Placa:</strong> ${item.placa}</p>
+                        <p><strong>Motorista:</strong> ${item.motorista}</p>
+                        <p><strong>RG:</strong> ${item.rg}</p>
+                        <p><strong>Status:</strong> ${item.status}</p>
+                        <hr>
+                        <h4>Pedidos e Notas</h4>
+                        <table border="1" width="100%" style="border-collapse: collapse; text-align: center;">
+                            <thead>
+                                <tr><th>Nota Fiscal</th><th>Pedido (PO)</th><th>Fornecedor</th><th>Data/Hora</th></tr>
+                            </thead>
+                            <tbody>
+                                ${item.dados.map(d => `
+                                    <tr>
+                                        <td>${d.nf}</td>
+                                        <td>${d.po}</td>
+                                        <td>${d.fornecedor}</td>
+                                        <td>${d.data_hora}</td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    `;
+                    div.innerHTML = html;
+                    document.getElementById("modalDetalhes").style.display = "block";
+                });
+        }
+
+        // Inicializa com a data de hoje e adiciona evento ao filtro
+        document.addEventListener("DOMContentLoaded", () => {
+            const hoje = new Date().toISOString().split("T")[0];
+            const inputData = document.getElementById("filtroData");
+            inputData.value = hoje;
+            inputData.addEventListener("change", carregarAcompanhamento);
+            carregarAcompanhamento();
+        });        
+    </script>
+
+</body>
+
+</html>
